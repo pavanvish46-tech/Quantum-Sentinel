@@ -1,1 +1,13 @@
 
+{
+  "name": "quantum-sentinel",
+  "version": "1.0.0",
+  "description": "Holographic APK Scanner - Static Site",
+  "scripts": {
+    "start": "echo 'Static site ready for deployment'",
+    "build": "echo 'Build complete'"
+  },
+  "keywords": ["apk-scanner", "cybersecurity", "holographic-ui"],
+  "author": "Quantum Sentinel Team",
+  "license": "MIT"
+}
