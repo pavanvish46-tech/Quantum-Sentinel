@@ -3,107 +3,531 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Quantum Sentinel - Advanced Holographic APK Scanner">
-    <title>Quantum Sentinel - APK Scanner</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="icon" href="assets/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>NeoGuard - Banking APK Sentinel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(119, 198, 255, 0.2) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1.1) rotate(1deg); }
+        }
+
+        /* Grid Overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            animation: grid-move 20s linear infinite;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slide-down 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 0, 110, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #8b5cf6;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
+            animation: fade-in 1s ease-out;
+        }
+
+        .file-drop-zone {
+            border: 2px dashed #00ffff;
+            border-radius: 15px;
+            padding: 60px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-drop-zone:hover {
+            border-color: #ff006e;
+            box-shadow: 0 0 30px rgba(255, 0, 110, 0.5);
+        }
+
+        .file-drop-zone.dragover {
+            border-color: #8338ec;
+            background: rgba(131, 56, 236, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Scan Results */
+        .results-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 0, 110, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            animation: slide-up 0.5s ease-out;
+        }
+
+        .threat-level {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .threat-circle {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 10;
+        }
+
+        .circle-progress {
+            fill: none;
+            stroke-width: 10;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 1s ease-out;
+        }
+
+        .threat-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px currentColor;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .analysis-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .analysis-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .analysis-card h3 {
+            color: #00ffff;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .risk-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .risk-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-out;
+            background: linear-gradient(90deg, #00ff00, #ffff00, #ff6600, #ff0000);
+        }
+
+        /* Login Profile */
+        .login-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(131, 56, 236, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 30px;
+            animation: fade-in 1s ease-out;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #8b5cf6;
+            text-shadow: 0 0 5px rgba(139, 92, 246, 0.5);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff006e;
+            box-shadow: 0 0 15px rgba(255, 0, 110, 0.5);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff006e, #8338ec);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 0, 110, 0.4);
+        }
+
+        /* Animations */
+        @keyframes slide-down {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slide-up {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Neon Text Effect */
+        .neon-text {
+            text-shadow: 
+                0 0 5px currentColor,
+                0 0 10px currentColor,
+                0 0 15px currentColor,
+                0 0 20px currentColor;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .upload-section, .results-section, .login-section { padding: 20px; }
+            .file-drop-zone { padding: 40px; }
+        }
+    </style>
 </head>
 <body>
-    <!-- Background Effects -->
-    <div class="quantum-bg"></div>
-    <div class="neural-overlay"></div>
-    <div class="particles" id="particles"></div>
-    
-    <!-- Loading Screen -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="quantum-loader"></div>
-    </div>
+    <div class="bg-animation"></div>
+    <div class="grid-overlay"></div>
 
-    <!-- Main Container -->
-    <div class="quantum-container">
-        <div class="quantum-scanner">
-            <div class="scanner-ring ring-1"></div>
-            <div class="scanner-ring ring-2"></div>
-            <div class="scanner-ring ring-3"></div>
-            
-            <div class="upload-core" id="uploadCore">
-                <div class="core-icon">🔮</div>
-                <p>QUANTUM SCAN</p>
-                <input type="file" id="fileInput" accept=".apk" hidden>
+    <div class="container">
+        <header class="header">
+            <h1 class="neon-text">NeoGuard</h1>
+            <p>Banking APK Sentinel System</p>
+        </header>
+
+        <section class="upload-section">
+            <div class="file-drop-zone" id="dropZone">
+                <div class="upload-icon">📱</div>
+                <h3>Drop APK file here or click to browse</h3>
+                <p>Maximum file size: 50MB</p>
+                <input type="file" class="file-input" id="fileInput" accept=".apk">
             </div>
-        </div>
+        </section>
 
-        <div class="analysis-dashboard" id="analysisDashboard">
-            <div class="dashboard-header">
-                <h1 class="dashboard-title">QUANTUM ANALYSIS</h1>
-                <p>Multi-dimensional threat detection complete</p>
-            </div>
-
-            <div class="threat-overview">
-                <div class="quantum-circle">
-                    <svg width="250" height="250">
-                        <circle class="circle-bg" cx="125" cy="125" r="110"></circle>
-                        <circle class="circle-progress" id="threatCircle" cx="125" cy="125" r="110"
-                                stroke-dasharray="691.15" stroke-dashoffset="691.15"></circle>
+        <section class="results-section" id="resultsSection">
+            <div class="threat-level">
+                <h2>Security Analysis</h2>
+                <div class="threat-circle">
+                    <svg width="200" height="200">
+                        <circle class="circle-bg" cx="100" cy="100" r="90"></circle>
+                        <circle class="circle-progress" id="threatCircle" cx="100" cy="100" r="90"
+                                stroke-dasharray="565.48" stroke-dashoffset="565.48"></circle>
                     </svg>
-                    <div class="threat-value" id="threatValue">0%</div>
+                    <div class="threat-text" id="threatText">0%</div>
                 </div>
-                <div class="threat-status" id="threatStatus">Initializing quantum scan...</div>
+                <p id="threatDescription">Scanning...</p>
             </div>
 
-            <div class="detailed-analysis">
+            <div class="analysis-grid">
                 <div class="analysis-card">
-                    <div class="card-title">🦠 Malware Signature</div>
-                    <div id="malwareDetails">Scanning...</div>
-                    <div class="risk-bar"><div class="risk-fill" id="malwareRisk"></div></div>
+                    <h3>Malicious Code</h3>
+                    <p id="maliciousCode">Low Risk</p>
+                    <div class="risk-bar">
+                        <div class="risk-fill" style="width: 15%"></div>
+                    </div>
                 </div>
-
                 <div class="analysis-card">
-                    <div class="card-title">🏦 Banking Trojans</div>
-                    <div id="trojanDetails">Scanning...</div>
-                    <div class="risk-bar"><div class="risk-fill" id="trojanRisk"></div></div>
+                    <h3>Banking Trojans</h3>
+                    <p id="bankingTrojans">No Threats</p>
+                    <div class="risk-bar">
+                        <div class="risk-fill" style="width: 5%"></div>
+                    </div>
                 </div>
-
                 <div class="analysis-card">
-                    <div class="card-title">🔐 Permission Analysis</div>
-                    <div id="permissionDetails">Scanning...</div>
-                    <div class="risk-bar"><div class="risk-fill" id="permissionRisk"></div></div>
+                    <h3>Phishing Detection</h3>
+                    <p id="phishingDetection">Safe</p>
+                    <div class="risk-bar">
+                        <div class="risk-fill" style="width: 10%"></div>
+                    </div>
                 </div>
-
                 <div class="analysis-card">
-                    <div class="card-title">🔍 Code Injection</div>
-                    <div id="injectionDetails">Scanning...</div>
-                    <div class="risk-bar"><div class="risk-fill" id="injectionRisk"></div></div>
-                </div>
-
-                <div class="analysis-card">
-                    <div class="card-title">📊 Network Analysis</div>
-                    <div id="networkDetails">Scanning...</div>
-                    <div class="risk-bar"><div class="risk-fill" id="networkRisk"></div></div>
-                </div>
-
-                <div class="analysis-card">
-                    <div class="card-title">🔒 Encryption Check</div>
-                    <div id="encryptionDetails">Scanning...</div>
-                    <div class="risk-bar"><div class="risk-fill" id="encryptionRisk"></div></div>
+                    <h3>Permissions Risk</h3>
+                    <p id="permissionsRisk">Moderate</p>
+                    <div class="risk-bar">
+                        <div class="risk-fill" style="width: 45%"></div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <button class="quantum-portal" onclick="openPortal()">🔐 ACCESS</button>
+        <section class="login-section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #00ffff;" class="neon-text">
+                Security Researcher Login
+            </h2>
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter your agent ID">
+                </div>
+                <div class="form-group">
+                    <label for="password">Access Key</label>
+                    <input type="password" id="password" placeholder="Enter secure key">
+                </div>
+                <button type="submit" class="login-btn">Access Secure Portal</button>
+            </form>
+        </section>
     </div>
 
-    <div class="quantum-portal" id="quantumPortal">
-        <button class="close-btn" onclick="closePortal()">×</button>
-        <h3>🔐 QUANTUM ACCESS</h3>
-        <form class="portal-form" onsubmit="handleLogin(event)">
-            <input type="text" class="portal-input" placeholder="Agent ID" required>
-            <input type="password" class="portal-input" placeholder="Quantum Key" required>
-            <button type="submit" class="portal-btn">ACCESS PORTAL</button>
-        </form>
-    </div>
+    <script>
+        // File Upload Handling
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const resultsSection = document.getElementById('resultsSection');
+        const threatCircle = document.getElementById('threatCircle');
+        const threatText = document.getElementById('threatText');
+        const threatDescription = document.getElementById('threatDescription');
 
-    <script src="js/main.js"></script>
+        dropZone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFile);
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        });
+
+        function handleFile(e) {
+            const file = e.target.files[0];
+            if (file) {
+                processFile(file);
+            }
+        }
+
+        function processFile(file) {
+            if (file.name.endsWith('.apk')) {
+                dropZone.innerHTML = '<div class="upload-icon">🔍</div><h3>Analyzing APK...</h3>';
+                
+                // Simulate scanning
+                setTimeout(() => {
+                    showResults();
+                }, 2000);
+            } else {
+                alert('Please upload a valid APK file');
+            }
+        }
+
+        function showResults() {
+            resultsSection.style.display = 'block';
+            
+            // Animate threat percentage
+            let threatLevel = Math.floor(Math.random() * 100);
+            let current = 0;
+            const interval = setInterval(() => {
+                current++;
+                if (current > threatLevel) {
+                    clearInterval(interval);
+                    updateThreatDescription(threatLevel);
+                }
+                
+                threatText.textContent = current + '%';
+                const offset = 565.48 - (565.48 * current / 100);
+                threatCircle.style.strokeDashoffset = offset;
+                
+                // Change color based on threat level
+                if (current < 30) {
+                    threatCircle.style.stroke = '#00ff00';
+                } else if (current < 70) {
+                    threatCircle.style.stroke = '#ffff00';
+                } else {
+                    threatCircle.style.stroke = '#ff0000';
+                }
+            }, 20);
+        }
+
+        function updateThreatDescription(level) {
+            if (level < 30) {
+                threatDescription.textContent = 'SAFE: This APK appears to be legitimate';
+                threatDescription.style.color = '#00ff00';
+            } else if (level < 70) {
+                threatDescription.textContent = 'MODERATE: Some suspicious elements detected';
+                threatDescription.style.color = '#ffff00';
+            } else {
+                threatDescription.textContent = 'DANGER: High-risk banking malware detected!';
+                threatDescription.style.color = '#ff0000';
+            }
+        }
+
+        // Login Form
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Secure portal access granted! Welcome, Security Researcher.');
+        });
+
+        // Add some interactive particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.width = '2px';
+            particle.style.height = '2px';
+            particle.style.background = '#00ffff';
+            particle.style.boxShadow = '0 0 10px #00ffff';
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.top = '-10px';
+            particle.style.zIndex = '0';
+            document.body.appendChild(particle);
+
+            const duration = Math.random() * 3000 + 2000;
+            particle.animate([
+                { transform: 'translateY(0px)', opacity: 1 },
+                { transform: `translateY(${window.innerHeight + 10}px)`, opacity: 0 }
+            ], {
+                duration: duration,
+                easing: 'linear'
+            }).onfinish = () => particle.remove();
+        }
+
+        // Create particles every 500ms
+        setInterval(createParticle, 500);
+    </script>
 </body>
 </html>
